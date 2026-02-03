@@ -8,10 +8,9 @@ export async function createClient() {
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-        console.error('❌ [SUPABASE ERROR] Missing Environment Variables on Server!');
-        console.error(`- URL: ${supabaseUrl ? 'Set' : 'MISSING'}`);
-        console.error(`- KEY: ${supabaseKey ? 'Set' : 'MISSING'}`);
-        throw new Error('Supabase URL and Key are required in Environment Variables.');
+        const errorMsg = `Supabase Vars Missing! URL: ${supabaseUrl ? 'OK' : 'MISSING'}, KEY: ${supabaseKey ? 'OK' : 'MISSING'}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg);
     }
 
     return createServerClient(
