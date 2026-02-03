@@ -4,8 +4,9 @@ import { cookies } from 'next/headers'
 export async function createClient() {
     const cookieStore = await cookies()
 
+    // Server-side dedicated variables
     const supabaseUrl = process.env.SUPABASE_PROJECT_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseKey = process.env.SUPABASE_API_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
         const errorMsg = `Supabase Vars Missing! URL: ${supabaseUrl ? 'OK' : 'MISSING'}, KEY: ${supabaseKey ? 'OK' : 'MISSING'}`;
