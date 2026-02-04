@@ -1,9 +1,9 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function saveAutomationFlow(nodes: any[], edges: any[]) {
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
 
     try {
         // 1. Check for existing Organization (Mock Auth for MVP)
@@ -95,7 +95,7 @@ export async function saveAutomationFlow(nodes: any[], edges: any[]) {
 }
 
 export async function getAutomationFlow() {
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
     console.log('--- GETTING FLOW ---');
 
     try {
