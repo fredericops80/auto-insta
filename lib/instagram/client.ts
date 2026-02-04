@@ -9,7 +9,8 @@ export async function sendInstagramDM(userId: string, text: string) {
     console.log(`📤 [INSTAGRAM] Sending DM to ${userId}...`);
 
     try {
-        const url = `https://graph.facebook.com/v21.0/${userId}/messages`;
+        // Fix: Use /me/messages to send AS the page/business
+        const url = `https://graph.facebook.com/v19.0/me/messages`;
 
         const response = await fetch(url, {
             method: 'POST',
