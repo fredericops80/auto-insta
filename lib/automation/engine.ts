@@ -43,19 +43,24 @@ export async function processWebhookEvent(event: any) {
     console.log(`🔎 [ENGINE] Searching automation for keyword: "${triggerText}"`);
 
     // 2. Find Matching Automation
-    // In a real app, we should search using ILIKE or full text search
-    // Currently our DB has 'keyword' column.
+    // Fix: We need to find an automation where the KEYWORD is contained in the TRIGGER TEXT.
+    // PostgREST simple filters make 'column contains variable' hard.
+    // For MVP, we fetch active automations and filter in memory.
 
-    const { data: automation } = await supabase
+    const { data: automations } = await supabase
         .from('automations')
-        .select('id, org_id, name')
-        .ilike('keyword', `%${triggerText}%`) // Simple partial match
-        .eq('is_active', true)
-        .limit(1)
-        .single();
+        .select('id, org_id, name, keyword')
+        .eq('is_active', true);
+
+    const automation = automations?.find(a =>
+        a.keyword && triggerText.toLowerCase().includes(a.keyword.toLowerCase())
+    );
 
     if (!automation) {
-        console.log('📭 [ENGINE] No automation found for this keyword.');
+        console.log(`📭 [ENGINE] No automation found for text: "${triggerText}"`);
+        // Log all active keywords to help debugging
+        const activeKeywords = automations?.map(a => a.keyword).join(', ');
+        console.log(`(Active Keywords available: ${activeKeywords})`);
         return;
     }
 
