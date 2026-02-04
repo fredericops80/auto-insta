@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { sendInstagramDM } from '@/lib/instagram/client';
 
 // Types derived from React Flow but simplified for backend execution
@@ -24,11 +24,13 @@ export async function processWebhookEvent(event: any) {
 
     let triggerText = '';
     let instagramUserId = '';
+    let triggerCommentId = ''; // New: Capture Comment ID for Private Replies
 
     // Handle Comment Change
     if (event.value && event.value.text) {
         triggerText = event.value.text;
         instagramUserId = event.value.from.id;
+        triggerCommentId = event.value.id; // Correct ID field for comments
     }
     // Handle DM/Mention
     else if (event.message && event.message.text) {

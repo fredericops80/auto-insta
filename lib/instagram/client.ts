@@ -1,4 +1,4 @@
-export async function sendInstagramDM(userId: string, text: string) {
+export async function sendInstagramDM(userId: string, text: string, commentId?: string) {
     const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN;
 
     if (!accessToken) {
@@ -6,11 +6,23 @@ export async function sendInstagramDM(userId: string, text: string) {
         return false;
     }
 
-    console.log(`📤 [INSTAGRAM] Sending DM to ${userId}...`);
+    const recipientId = commentId ? `Comment: ${commentId}` : userId;
+    console.log(`📤 [INSTAGRAM] Sending DM to ${recipientId}...`);
 
     try {
-        // Fix: Use /me/messages to send AS the page/business
+        // Correct endpoint for messaging (both standard and private replies are /me/messages)
         const url = `https://graph.facebook.com/v19.0/me/messages`;
+
+        // Private Reply Payload requires specific structure
+        const bodyPayload = commentId
+            ? {
+                recipient: { comment_id: commentId },
+                message: { text: text }
+            }
+            : {
+                recipient: { id: userId },
+                message: { text: text }
+            };
 
         const response = await fetch(url, {
             method: 'POST',
@@ -18,10 +30,7 @@ export async function sendInstagramDM(userId: string, text: string) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify({
-                recipient: { id: userId },
-                message: { text: text }
-            })
+            body: JSON.stringify(bodyPayload)
         });
 
         const data = await response.json();
