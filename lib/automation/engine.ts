@@ -14,7 +14,7 @@ type FlowEdge = {
 };
 
 export async function processWebhookEvent(event: any) {
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
     console.log('⚡ [ENGINE] Processing Event:', event);
 
     // 1. Extract Trigger Info (Simplified for MVP: Comment Text)
