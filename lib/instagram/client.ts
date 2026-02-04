@@ -1,28 +1,40 @@
+/**
+ * Instagram Graph API Client for DMs
+ * 
+ * Required Env Vars:
+ * - INSTAGRAM_ACCESS_TOKEN: Page Access Token with instagram_manage_messages
+ * - INSTAGRAM_BUSINESS_ID: Your Instagram Business Account ID (numeric)
+ */
+
 export async function sendInstagramDM(userId: string, text: string, commentId?: string) {
     const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN;
+    const igBusinessId = process.env.INSTAGRAM_BUSINESS_ID;
 
     if (!accessToken) {
         console.error('❌ [INSTAGRAM] Missing INSTAGRAM_ACCESS_TOKEN in env.');
         return false;
     }
 
-    const recipientId = commentId ? `Comment: ${commentId}` : userId;
-    console.log(`📤 [INSTAGRAM] Sending DM to ${recipientId}...`);
+    if (!igBusinessId) {
+        console.error('❌ [INSTAGRAM] Missing INSTAGRAM_BUSINESS_ID in env.');
+        return false;
+    }
+
+    const recipientLog = commentId ? `Comment: ${commentId}` : `User: ${userId}`;
+    console.log(`📤 [INSTAGRAM] Sending Private Reply to ${recipientLog}...`);
 
     try {
-        // Correct endpoint for messaging (both standard and private replies are /me/messages)
-        const url = `https://graph.facebook.com/v19.0/me/messages`;
+        // Correct endpoint for Instagram: POST /{ig-user-id}/messages
+        const url = `https://graph.facebook.com/v19.0/${igBusinessId}/messages`;
 
-        // Private Reply Payload requires specific structure
-        const bodyPayload = commentId
-            ? {
-                recipient: { comment_id: commentId },
-                message: { text: text }
-            }
-            : {
-                recipient: { id: userId },
-                message: { text: text }
-            };
+        // Private Reply to Comment
+        const bodyPayload = {
+            recipient: { comment_id: commentId },
+            message: { text: text }
+        };
+
+        console.log(`📡 [INSTAGRAM] POST ${url}`);
+        console.log(`📦 [INSTAGRAM] Payload:`, JSON.stringify(bodyPayload));
 
         const response = await fetch(url, {
             method: 'POST',

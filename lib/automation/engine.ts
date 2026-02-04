@@ -111,12 +111,12 @@ export async function processWebhookEvent(event: any) {
         const nextNode = nodes.find(n => n.id === nextNodeId);
 
         if (nextNode) {
-            await executeNode(nextNode, instagramUserId, supabase, automation.id);
+            await executeNode(nextNode, instagramUserId, triggerCommentId, supabase, automation.id);
         }
     }
 }
 
-async function executeNode(node: FlowNode, userId: string, supabase: any, automationId: string) {
+async function executeNode(node: FlowNode, userId: string, commentId: string, supabase: any, automationId: string) {
     console.log(`⚙️ [ENGINE] Executing Node: ${node.type} (${node.id})`);
 
     // Log Execution Start
@@ -129,10 +129,10 @@ async function executeNode(node: FlowNode, userId: string, supabase: any, automa
     switch (node.type) {
         case 'message':
             const message = node.data.label || "Olá! (Mensagem Padrão)";
-            console.log(`🚀 [ACTION] Attempting to send DM to ${userId}: "${message}"`);
+            console.log(`🚀 [ACTION] Attempting Private Reply to Comment ${commentId}: "${message}"`);
 
-            // Execute Real API Call
-            await sendInstagramDM(userId, message);
+            // Execute Real API Call with Comment ID for Private Reply
+            await sendInstagramDM(userId, message, commentId);
 
             break;
 
