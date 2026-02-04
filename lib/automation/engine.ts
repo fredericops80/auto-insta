@@ -123,15 +123,20 @@ async function executeNode(node: FlowNode, userId: string, supabase: any, automa
         status: 'RUNNING'
     });
 
+    import { sendInstagramDM } from '@/lib/instagram/client';
+
+    // ... (Existing Imports)
+
+    // ... (Inside executeNode function)
+
     switch (node.type) {
         case 'message':
             const message = node.data.label || "Olá! (Mensagem Padrão)";
-            console.log(`🚀 [ACTION] SENDING DM to ${userId}: "${message}"`);
+            console.log(`🚀 [ACTION] Attempting to send DM to ${userId}: "${message}"`);
 
-            // TODO: Call Instagram API here
-            // await sendInstagramDM(userId, message);
+            // Execute Real API Call
+            await sendInstagramDM(userId, message);
 
-            console.log('✅ [ACTION] DM Sent successfully (Simulated)');
             break;
 
         case 'condition':
@@ -141,6 +146,9 @@ async function executeNode(node: FlowNode, userId: string, supabase: any, automa
         default:
             console.log(`⚠️ [ENGINE] Unknown node type: ${node.type}`);
     }
+
+    // Log Completion...
+}
 
     // Log Completion
     // In a real generic engine, we would update the running log row.
