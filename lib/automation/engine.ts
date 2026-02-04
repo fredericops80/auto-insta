@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { sendInstagramDM } from '@/lib/instagram/client';
 
 // Types derived from React Flow but simplified for backend execution
 type FlowNode = {
@@ -123,12 +124,6 @@ async function executeNode(node: FlowNode, userId: string, supabase: any, automa
         status: 'RUNNING'
     });
 
-    import { sendInstagramDM } from '@/lib/instagram/client';
-
-    // ... (Existing Imports)
-
-    // ... (Inside executeNode function)
-
     switch (node.type) {
         case 'message':
             const message = node.data.label || "Olá! (Mensagem Padrão)";
@@ -146,9 +141,6 @@ async function executeNode(node: FlowNode, userId: string, supabase: any, automa
         default:
             console.log(`⚠️ [ENGINE] Unknown node type: ${node.type}`);
     }
-
-    // Log Completion...
-}
 
     // Log Completion
     // In a real generic engine, we would update the running log row.
