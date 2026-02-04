@@ -57,6 +57,21 @@ export async function saveAutomationFlow(nodes: any[], edges: any[]) {
             }).select().single();
             if (autoError) throw autoError;
             automation = newAuto;
+        } else {
+            // [UPDATE] Extract Trigger Keyword from current nodes to update the DB
+            // This ensures the Engine can find the automation by the new keyword
+            const triggerNode = nodes.find((n: any) => n.type === 'trigger');
+            if (triggerNode && triggerNode.data && triggerNode.data.label) {
+                const newKeyword = triggerNode.data.label;
+                console.log('Updating automation keyword to:', newKeyword);
+
+                await supabase.from('automations')
+                    .update({
+                        keyword: newKeyword,
+                        is_active: true
+                    })
+                    .eq('id', automation.id);
+            }
         }
 
         if (!automation) return { success: false, error: 'Falha crítica ao recuperar automação.' };
